@@ -3,6 +3,7 @@
 //  SwiftFortuneWheel-iOS
 //
 //  Created by Sherzod Khashimov on 6/26/20.
+//  Modified by Hyunjoon Ko on 7/11/23.
 //  Copyright © 2020 SwiftFortuneWheel. All rights reserved.
 //
 
@@ -32,7 +33,7 @@ extension String {
         let splitCharacterWidth = splitCharacter.width(by: font)
         
         /// Available words for String
-        var words = self.split(separator: splitCharacter.first!)
+        var words = self.components(separatedBy: splitCharacter) // self.split(separator: splitCharacter.first!)
         
         /// The minimum size of the last word
         var lastWordMinimumSize = CGFloat.greatestFiniteMagnitude
@@ -63,7 +64,19 @@ extension String {
                 let isFirstWordInLine = linedString.count < 1
                 
                 /// Current word
-                let word = String(words[wordIndex])
+                var word = String(words[wordIndex])
+                if splitCharacter != "\n", word.contains("\n") {
+                    let items = word.components(separatedBy: "\n")
+                    if let item = items.first {
+                        word = item
+                    }
+                    for i in 1..<items.count {
+                        words.insert(items[i], at: wordIndex + i)
+                    }
+                    if let lastWord = words.last {
+                        lastWordMinimumSize = String(lastWord.suffix(4)).width(by: font)
+                    }
+                }
                 
                 /// Word width, if it's not first in the line, adds the space before the word
                 let wordWidth = isFirstWordInLine ? word.width(by: font) : word.width(by: font) + splitCharacterWidth
@@ -95,7 +108,7 @@ extension String {
                             linedString = linedString + splitCharacter + croppedWord
                         }
                         /// Insert second word part to iteration
-                        words.insert(wordSecondPart, at: wordIndex+1)
+                        words.insert(String(wordSecondPart), at: wordIndex + 1)
                         
                         availableWidthInLine = 0
                         latestAddedWord = wordIndex + 1
@@ -114,7 +127,7 @@ extension String {
                             /// Is the latest line
                             let isLatestLine = lineWidths.count - 1 == index
                             /// If the line is not latest, the current word most likely will be added to the next line
-                            guard isLatestLine else { continue }
+                            guard isLatestLine else { break }
                             /// Checks available width in the line for the cropped word, the word won't be added if available width is less then for 5 character
                             guard availableWidthInLine >= splitCharacterWidth + lastWordMinimumSize else { continue }
                             /// Cropped word
