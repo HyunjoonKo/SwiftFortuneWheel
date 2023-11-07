@@ -45,6 +45,8 @@ extension String {
         /// Latest added word to the lines
         var latestAddedWord = 0
         
+        var isNewLine = false
+        
         /// Splits String to lines, up to last word
         for index in stride(from: 0, to: lineWidths.count, by: 1) {
             
@@ -65,16 +67,27 @@ extension String {
                 
                 /// Current word
                 var word = String(words[wordIndex])
-                if splitCharacter != "\n", word.contains("\n") {
-                    let items = word.components(separatedBy: "\n")
-                    if let item = items.first {
-                        word = item
-                    }
-                    for i in 1..<items.count {
-                        words.insert(items[i], at: wordIndex + i)
-                    }
-                    if let lastWord = words.last {
-                        lastWordMinimumSize = String(lastWord.suffix(4)).width(by: font)
+                if splitCharacter != "\n" {
+                    if word.contains("\n") {
+                        let items = word.components(separatedBy: "\n")
+                        for i in 0..<items.count {
+                            if i == 0 {
+                                isNewLine = true
+                                word = items[i]
+                                words[wordIndex] = items[i]
+                            } else {
+                                words.insert(items[i], at: wordIndex + i)
+                            }
+                        }
+                        if let lastWord = words.last {
+                            lastWordMinimumSize = String(lastWord.suffix(4)).width(by: font)
+                        }
+                    } else if isNewLine, availableWidthInLine != lineWidths[index], lineWidths.count - 1 != index {
+                        let range = (self as NSString).range(of: word)
+                        if range.location != NSNotFound, range.length != NSNotFound, range.length != 0, range.location != 0,
+                           (self as NSString).substring(with: NSRange(location: range.location - 1, length: 1)) == "\n" {
+                            break // added to the next line
+                        }
                     }
                 }
                 
