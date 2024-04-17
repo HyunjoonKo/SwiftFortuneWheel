@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "SwiftFortuneWheel"
-  s.version      = "1.4.3"
+  s.version      = "1.4.4"
   s.summary      = "Ultimate spinning wheel control that supports dynamic content and rich customization."
   s.description  = <<-DESC
   Fortune spinning wheel that supports dynamic content and rich customization. Main Features: Dynamic content, support image, and text; Appearance customization; Drawn and animated using CoreGraphics; Dynamic layout.
@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.author             = { "Sherzod Khashimov" => "sh.khashimov@gmail.com" }
   s.social_media_url   = ""
   s.ios.deployment_target = "9.0"
-  s.osx.deployment_target = "10.11"
+  s.osx.deployment_target = "10.13"
   s.tvos.deployment_target = "9.0"
   s.swift_versions = "5.0"
   s.source       = { :git => "https://github.com/sh-khashimov/SwiftFortuneWheel.git", :tag => s.version.to_s }
