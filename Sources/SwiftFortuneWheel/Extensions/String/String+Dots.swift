@@ -12,6 +12,8 @@ extension String {
     /// Replaces characters with dots at the end
     /// - Parameter count: last character count
     mutating func replaceLastCharactersWithDots(count: Int = 3) {
+        // Keeps strings shorter than count as they are, instead of trapping on an out-of-bounds index.
+        guard count > 0, self.count >= count else { return }
         var string = self
         let dots = Array.init(repeating: ".", count: count).joined()
         let start = string.index(string.endIndex, offsetBy: -count)
